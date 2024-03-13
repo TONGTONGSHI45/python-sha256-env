@@ -1,7 +1,6 @@
 name: PyInstaller Build
 
-on:
-  workflow_dispatch
+on: workflow_dispatch
 
 jobs:
   build-on-windows:
@@ -20,7 +19,7 @@ jobs:
           path: dist/sha256.exe
 
   build-on-linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -29,7 +28,7 @@ jobs:
       - name: Build binary
         run: pyinstaller sha256.py -F
       - name: Upload binary file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: sha256-linux
           path: dist/sha256
@@ -51,28 +50,26 @@ jobs:
 
   test-build-windows:
     runs-on: windows-2022
-    needs: build-on-windows 
+    needs: build-on-windows
     steps:
       - name: download exe file
         uses: actions/download-artifact@v4
         with:
-          name: sha256-windows-exe 
+          name: sha256-windows-exe
       - name: test exe file
-        run:
-          ls 
+        run: ls
           ./sha256.exe sha256.exe
 
   test-build-linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build-on-linux
     steps:
-      - name: Download binary file
-        uses: actions/download-artifact@v4
+      - name: download binary file
+        uses: actions/download-artifact@v3
         with:
           name: sha256-linux
       - name: test binary file
-        run:
-          ls
+        run: ls
           chmod +x sha256
           ./sha256 sha256
 
