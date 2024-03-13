@@ -1,23 +1,41 @@
 name: PyInstaller Build
 
-on: workflow_dispatch
+on:
+  workflow_dispatch
 
 jobs:
   build:
     runs-on: windows-2022
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Install pyinstaller
-      run: pip install pyinstaller
+      - name: Install pyinstaller
+        run: pip install pyinstaller
 
-    - name: Build exe
-      run: pyinstaller sha256.py -F
+      - name: Build exe
+        run: pyinstaller sha256.py -F
 
-    - name: upload exe file
-      uses: actions/upload-artifact@v4
-      with:
-        name: sha256-windows-exe
-        path: dist/sha256.exe
+      - name: upload exe file
+        uses: actions/upload-artifact@v4
+        with:
+          name: sha256-windows-exe
+          path: dist/sha256.exe
+
+  build-on-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install pyinstaller
+        run: pip install pyinstaller
+
+      - name: Build binary
+        run: pyinstaller sha256.py -F
+
+      - name: Upload binary file
+        uses: actions/upload-artifact@v4
+        with:
+          name: sha256-linux
+         
