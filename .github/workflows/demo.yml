@@ -4,19 +4,16 @@ on:
   workflow_dispatch
 
 jobs:
-  build:
+  build-on-windows:
     runs-on: windows-2022
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Install pyinstaller
         run: pip install pyinstaller
-
       - name: Build exe
         run: pyinstaller sha256.py -F
-
-      - name: upload exe file
+      - name: Upload exe file
         uses: actions/upload-artifact@v4
         with:
           name: sha256-windows-exe
@@ -27,13 +24,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
       - name: Install pyinstaller
         run: pip install pyinstaller
-        
       - name: Build binary
         run: pyinstaller sha256.py -F
-        
       - name: Upload binary file
         uses: actions/upload-artifact@v4
         with:
@@ -45,15 +39,52 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Install pyinstaller
         run: pip install pyinstaller
-
       - name: Build binary
         run: pyinstaller sha256.py -F
-
       - name: Upload binary file
         uses: actions/upload-artifact@v4
         with:
           name: sha256-macos
           path: dist/sha256
+
+  test-build-windows:
+    runs-on: windows-2022
+    needs: build-on-windows 
+    steps:
+      - name: download exe file
+        uses: actions/download-artifact@v4
+        with:
+          name: sha256-windows-exe 
+      - name: test exe file
+        run:
+          ls 
+          ./sha256.exe sha256.exe
+
+  test-build-linux:
+    runs-on: ubuntu-latest
+    needs: build-on-linux
+    steps:
+      - name: Download binary file
+        uses: actions/download-artifact@v2
+        with:
+          name: sha256-linux
+      - name: test binary file
+        run:
+          ls
+          chmod +x sha256
+          ./sha256 sha256
+
+  test-build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Download binary file
+        uses: actions/download-artifact@v2
+        with:
+          name: sha256-mac
+      - name: test binary file
+        run: |
+          ls
+          chmod +x sha256
+          ./sha256 sha256
