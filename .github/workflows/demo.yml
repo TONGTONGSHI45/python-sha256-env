@@ -22,8 +22,8 @@ jobs:
           name: sha256-windows-exe
           path: dist/sha256.exe
 
-  build-on-linux:
-    runs-on: ubuntu-latest
+  build-on-mac:
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,5 +37,5 @@ jobs:
       - name: Upload binary file
         uses: actions/upload-artifact@v4
         with:
-          name: sha256-linux
-         
+          name: sha256-macos
+          path: dist/sha256
